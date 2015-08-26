@@ -1,0 +1,7 @@
+text hello\n
+text "How are you?\n"
+text "Hello World\n"
+text "the answer is "
+output 42
+text \n
+

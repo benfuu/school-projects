@@ -1,0 +1,47 @@
+var x 1
+if + x 1
+	text "Good work! if evaluates the non-zero constants as true\n"
+else 
+	text "oops!\n"
+fi
+
+if 0 
+	text "Oops! failed\n"
+else 
+	text "Hurray! If evaluates the zero as false\n"
+fi 
+
+if ! + x 1 
+else 
+	text "If you could parse this, it probably worked...\n"
+fi 
+
+
+if ! + x 1
+	text "this shouldn't be printed out!\n"
+fi 
+
+if + x 1 
+else 
+	text "you shouldn't see this...\n"
+fi 
+
+
+var y 2
+
+if && + y ~ 1 2
+	text "Well done! your if-else works with multiple if conditions\n" 
+fi
+
+if ! && + y ~ 1 2
+	text "Just checking.... I am sure this won't print, (unless you messed up expression eval)\n" 
+fi
+
+if + y ~ 1 
+    if + y ~ 2 
+	text " Oops! somethings wrong in the nested if evaluation "
+    else 
+	text "Hurray! Nested if works!"
+    fi
+fi
+

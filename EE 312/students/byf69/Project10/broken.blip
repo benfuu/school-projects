@@ -1,0 +1,4 @@
+var apples 8
+var pears 5
+var grapes 0
+output < + 8 0 + + 8 5 0

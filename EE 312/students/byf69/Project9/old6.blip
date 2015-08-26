@@ -1,0 +1,16 @@
+ // so 
+ // long
+ // and
+var thanks 2
+var for 4
+var all 6
+var the 8
+var fish 10
+
+set thanks fish
+set for + for all
+set all 10
+set the - + the 1 ~ 1
+set fish * ! % 10 3 fish
+
+output + - * / thanks for all the fish

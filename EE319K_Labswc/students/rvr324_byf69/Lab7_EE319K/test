@@ -1,0 +1,7 @@
+Divide_Outfix
+	CMP	R1,R3			;see if R3 is too big to be divided	
+	BLO	NotEnough_Outfix
+	B	Print_Outfix
+NotEnough_Outfix
+	UDIV R3,R12
+	B	Divide_Outfix

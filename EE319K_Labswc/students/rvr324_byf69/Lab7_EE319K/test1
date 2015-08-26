@@ -1,0 +1,42 @@
+n	EQU	0				;bind n as a variable on stack
+	SUB	SP,#8			;allocate a 32-bit variable
+
+	MOV	R3,#10000		;R3 = 10^4
+	MOV	R12,#10
+	MOV	R1,R0			;transfer number into R1
+Divide_Dec
+	CMP	R1,R3			;see if R3 is too big to be divided	
+	BLO	NotEnough_Dec
+	B	Print_Dec
+NotEnough_Dec
+	UDIV R3,R12
+	CMP	R3,#0
+	BEQ	PrintNull_Dec
+	B	Divide_Dec
+Print_Dec
+	CMP	R1,R3			;see if character is a 0
+	BLO	PrintZero_Dec
+	UDIV R0,R1,R3		;get first char into R0
+	MUL	R2,R0,R3		;R2 = (R1/R3)*R3 without the remainder
+	SUB	R1,R2			;R1 = remainder (new number)
+	ADD	R0,#0x30		;convert to ASCII
+	STR	R0,[SP,#n]		;push ASCII character to stack
+	BL	LCD_OutChar
+	B	Next_Dec
+PrintZero_Dec
+	MOV	R0,#0x30		;print a 0
+	STR	R0,[SP,#n]		;push 0x30 (ASCII for 0) to stack
+	BL	LCD_OutChar
+	B	Next_Dec
+Next_Dec
+	CMP	R3,#1			;see if last char has been outputted
+	BEQ	Done_Dec
+	UDIV R3,R12			;R3 = R3/10
+	B	Print_Dec
+PrintNull_Dec
+	MOV	R0,#0x30
+	STR	R0,[SP,#n]
+	BL	LCD_OutChar
+	B	Done_Dec
+Done_Dec
+	ADD	SP,#8			;deallocate

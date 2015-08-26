@@ -1,0 +1,13 @@
+defun fact params n smarap
+    if < n 2 return 1 fi
+    return * n call fact args - n 1 sgra
+nufed
+
+var x 1
+do < x 10
+    output x
+    text "! is "
+    output call fact args x sgra
+    text \n
+    set x + x 1
+od

@@ -1,0 +1,5 @@
+defun sayHello params smarap
+    text "Hello World\n"
+nufed
+
+var not_used call sayHello args sgra

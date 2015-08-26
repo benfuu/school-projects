@@ -1,0 +1,25 @@
+Inventory Bottles 100
+Inventory Rattles 50
+Inventory Diapers 200
+
+Purchase Craig Bottles 4
+Purchase Craig Diapers 100
+
+Purchase Billy Diapers 100
+
+Summarize
+
+SKU BabyWipes
+SKU Pacifiers
+
+Inventory BabyWipes 100
+Inventory Pacifiers 20
+
+Purchase Craig BabyWipes 20
+
+Summarize
+Quit
+
+
+
+

@@ -1,0 +1,14 @@
+var x 1
+
+defun fun params x smarap
+    set x + x 1
+    set x + x 3
+    output x text \n
+nufed
+
+var y call fun args x sgra
+
+
+
+
+

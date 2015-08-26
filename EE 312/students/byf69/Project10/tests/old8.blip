@@ -1,0 +1,60 @@
+var x 1
+
+defun foo0 params smarap
+nufed
+
+defun foo params smarap
+	return + 1 2
+nufed
+
+
+set x call foo args sgra
+
+if == x 3 
+	text "Good start! A function without params seems to be working\n"
+else 
+	text "Oops! Return value of the function call doesn't match!\n"
+fi
+
+set x call foo0 args sgra
+
+if == x 0 
+	text "A function without return statement returns zero! Hurray!\n"
+else 
+	text "Oops! Somethings wrong!\n"
+fi
+
+// Functions with local variables and parameters
+
+defun foo1 params x smarap
+	var z 0
+	do > x 0 
+		set x - x 1
+		set z + z 1
+	od
+	return z
+nufed
+
+
+var z 0
+
+set x 5
+
+set z call foo1 args x sgra  
+
+if && == x 5 == z 5 
+	text "Local scoping of parameters and variables seems to be working!\n"
+fi
+
+text "One more check ... "
+
+set z call foo1 args 4 sgra  
+
+set x call foo1 args x sgra  
+
+
+if && == z 4 == x 5
+	text "It works!!\n"
+fi
+ 
+

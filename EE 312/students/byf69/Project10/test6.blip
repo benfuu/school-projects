@@ -1,0 +1,45 @@
+var a 1
+var b 2
+var c 3
+var d 4
+var z 26
+var peachPie 0
+
+if < a b
+    do <= a d
+        if == d 4
+            text "nice!\n"
+            set a + a 1
+        else
+            text "9999999999"
+        fi
+    od
+else
+    set a 102
+    set b 300
+    do < a b
+        set c 47
+        if < a b
+            text "9999999999"
+        else
+            text "9999999999"
+        fi
+    od
+fi
+
+
+
+do <= d z
+if > a z 
+    do a
+        text "infinite loop!!!\n"
+    od
+    set z 1000000
+else
+    do <= peachPie 10
+        text "nice again!!\n"
+        set peachPie + peachPie 1
+    od
+fi
+set d + d 1
+od

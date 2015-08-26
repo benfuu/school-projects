@@ -1,0 +1,28 @@
+Inventory Bottles 100
+Inventory Rattles 100
+Inventory Diapers 150
+
+Purchase Travis Diapers 75
+Purchase Patrick Diapers 75
+
+Purchase Matt Rattles 50
+Purchase Cassidy Rattles 50
+
+Purchase Ray Bottles 50
+Purchase Tye Bottles 50 
+
+Summarize
+
+Quit
+
+/** test6 Results should be: **/
+There are 0 Bottles, 0 Diapers and 0 Rattles in inventory
+we have had a total of 6 different customers
+Ray/Tye has purchased the most Biapers (50)
+Travis/Patrick has purchased the most Diapers (75)
+Matt/Cassidy has purchased the most Rattles (50)
+/********* end of test 6 *********/
+
+
+
+

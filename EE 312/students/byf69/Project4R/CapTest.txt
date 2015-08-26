@@ -1,0 +1,19 @@
+Inventory Bottles 50
+
+Purchase Craig Bottles 10
+Purchase craig Bottles 10
+Purchase CRaiG Bottles 10
+
+
+Summarize
+Quit
+
+*******  This test is obviously to test customers with the same name and different capitalizations ******
+
+/** CapTest Results should be: **/
+There are 0 diapers, 20 bottles and 0 rattles in inventory
+we have had a total of 3 different customers
+No one has purchased any diapers
+Craig/craig/CRaiG has purchased the most bottles (10)
+No one has purchased any rattles
+/********* end of CapTest *********/

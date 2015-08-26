@@ -1,0 +1,23 @@
+0011 0000 0000 0000  ;start program at x3000
+0010 000 0 1111 1111 ;load string from x3100 into R0
+0101 001 001 1 00000 ;clear R1
+0101 010 010 1 00000 ;clear R2 to be used as counter
+0001 010 010 1 01111 ;add 15 to R2
+0001 010 010 1 00010 ;add 2 to R2 so total is #17
+0000 010 0 0000 1101 ;see if R2 has hit 0, if so, branch to trap
+0001 000 000 1 00000 ;set R0 to be examined
+0000 011 0 0000 0011 ;see if bit in R0 is a 0, if so, branch to next step
+0001 000 000 0 00000 ;bit is not 0, so shift string
+0001 010 010 1 11111 ;decrement counter
+0000 111 1 1111 1010 ;branch back to x3005 to see if R2 has hit 0
+0001 000 000 0 00000 ;bit is 0 so shift string
+0001 010 010 1 11111 ;decrement counter
+0000 010 0 0000 0101 ;see if R2 has hit 0, if so, branch to trap
+0001 000 000 1 00000 ;set R0 to be examined
+0000 100 0 0000 0001 ;see if bit is a 1
+0000 111 1 1111 1010 ;not a 1, so don't increment R1, and branch back to x300B
+0001 001 001 1 00001 ;bit is a 1, so increment R1
+0000 111 1 1111 0101 ;branch back to x3008
+0011 001 0 1110 1101 ;store R1 into x3101
+1111 0000 0010 0101  ;stop program
+;HOlY CRAP THIS WORKS HADSIFHASDUFHA;KSDFHSADKJFHASDKUFG

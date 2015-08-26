@@ -1,0 +1,31 @@
+Inventory Rattles 95
+Inventory Diapers 10
+Inventory Bottles 10
+
+Inventory Rattles -10
+Inventory Diapers -5
+
+Inventory Rattles 5
+
+Inventory Rattles -90
+
+Purchase Sam Bottles 0
+Purchase Sue Bottles 10
+Purchase Gloria Bottles 0
+Purchase Reagan Bottles 20
+
+Summarize
+Quit
+
+/** test8 Results should be: **/
+Sorry Reagan, we only have 0 Bottles
+There are 0 Bottles, 5 Diapers and 0 Rattles in inventory
+we have had a total of 1 different customers
+Sue has purchased the most Bottles (10)
+no one has purchased any Diapers
+no one has purchased any Rattles
+/******** end of test 8 ********/
+
+
+
+

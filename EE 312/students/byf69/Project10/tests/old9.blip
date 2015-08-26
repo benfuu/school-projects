@@ -1,0 +1,21 @@
+// The evil test :P
+var x 2
+
+defun foo params x smarap
+	var z 0
+	do > x 0
+		set x - x 1 
+		set z + z 1
+		if == x 2
+			return + z 1 
+		fi
+	od
+nufed
+
+output call foo args 5 sgra
+output call foo args x sgra
+output call foo args x sgra
+
+
+
+

@@ -1,0 +1,11 @@
+var x 1
+var y 1
+do <= x 10
+    do <= y 10
+        output y
+        text "   "
+        set y + y 1
+    od
+    set y 1
+    set x + x 1
+od

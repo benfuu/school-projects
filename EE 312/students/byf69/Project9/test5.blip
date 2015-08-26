@@ -1,0 +1,13 @@
+var orange 5 
+var juice + 3 2
+
+output orange
+output juice
+output + orange juice // orange juice!
+
+var bears - orange 4
+var beets juice
+var battlestar 10
+var galactica 20
+
+output * * * bears beets battlestar galactica 

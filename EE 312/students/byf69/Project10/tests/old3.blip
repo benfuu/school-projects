@@ -1,0 +1,17 @@
+var x 1
+do <= x 10 
+output x
+text \n
+set x + x 1
+od
+if == x 11
+text "Well Done! "
+text "Your if statement worked correctly\n"
+else 
+text "oops!\n"
+fi
+if > x x
+text "oops, failed\n"
+else
+text "hooray!\n"
+fi

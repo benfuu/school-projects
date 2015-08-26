@@ -1,0 +1,43 @@
+var x 1
+var y 1
+var z 1
+var a 1
+var b 1
+var c 1
+var d 1
+var e 1
+var f 1
+var g 1
+var h 1
+
+do < x 1000000
+	set x + x 1
+	set y + x 1
+	set z + y 1
+	set a + a 1
+    set b + b 1
+    set c + c 1
+    set d + d 1
+    set e + e 1
+    set f + f 1
+    set g + g 1
+    set h + h 1
+od
+
+text "Good! your code runs for a large loop\n Maybe, test it for even larger ones later...."
+
+set x 1
+
+do > 0 x
+od
+
+text "Awesome! you could parse a loop with no statements.\n"
+
+text "Now, how about an infinite one?\n"
+
+do < 0 x
+od
+
+
+
+ 

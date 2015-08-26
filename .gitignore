@@ -1,0 +1,46 @@
+EE 422C/.metadata/
+EE306_Labs/.svn/
+EE319K_Labswc/.svn/
+EE319K_Labswc/students/rvr324_byf69/Lab10_EE319K/Lab10Files/PipeDreams/
+EE319K_Labswc/students/rvr324_byf69/Lab10_EE319K/Lab10Files/
+EE 422C/.recommenders/
+EE 312/.svn/
+EE 312/gtest/
+EE 312/students/byf69/Project1B/GRADE_REPORT.txt
+GRADE_REPORT.txt
+EE 312/LectureNotes/
+EE 312/PastExams/
+EE 312/examples/
+*.hex
+*.lst
+*.result
+*.output
+*.sym
+*.conf
+EE319K_Labs/conf/
+EE319K_Labs/db/
+EE 422C/exam1/
+EE 312/test_cases/
+*.sln
+*.sdf
+*.vcxproj
+EE 312/students/byf69/Exercise10/Debug/
+Debug/
+EE 312/exercises/
+EE319K_Labs/
+EE319K_Labswc/DataSheets/
+*.iex
+*.plg
+*.sct
+*.tra
+*.uvgui
+*.Ben
+*.uvopt
+*.uvproj
+*.dep
+EE319K_Labswc/students/rvr324_byf69/Lab10_EE319K/Game.build_log.htm
+*.lnp
+*.map
+*.crf
+EE319K_Labswc/students/rvr324_byf69/Lab6_EE319K/Lab6.htm
+*.axf

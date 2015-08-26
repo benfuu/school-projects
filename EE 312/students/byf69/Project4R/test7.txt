@@ -1,0 +1,30 @@
+Purchase Craig Bottles 0
+Purchase Billy Diapers 0
+Purchase Sue Rattles 0
+Purchase Craig Diapers 0
+Purchase Craig Bottles 0
+Purchase Craig Rattles 0
+
+Inventory Diapers 10
+
+Purchase Billy Diapers 20
+
+Inventory Bottles 10
+
+Purchase Sam Bottles 0
+Purchase Sue Bottles 10
+Purchase Gloria Bottles 0
+Purchase Reagan Bottles 20
+
+Summarize
+Quit
+
+/** test7 Results should be: **/
+Sorry Billy, we only have 10 Diapers
+Sorry Reagan, we only have 0 Bottles
+There are 10 diapers, 0 bottles and 0 rattles in inventory
+we have had a total of 1 different customers
+no one has purchased any diapers
+Sue has purchased the most bottles (10)
+no one has purchased any rattles
+/******** end of test 7 ********/
