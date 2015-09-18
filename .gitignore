@@ -46,3 +46,12 @@ EE319K_Labswc/students/rvr324_byf69/Lab6_EE319K/Lab6.htm
 *.axf
 *.filters
 *.opensdf
+EE 379K/Project1/yash/bin/
+EE 379K/Project1/yash/obj/
+*.o
+*.cbp
+*.depend
+*.layout
+EE 379K/Project1/yash/yash
+*.iml
+**/.idea/
