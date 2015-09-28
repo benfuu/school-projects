@@ -3,14 +3,14 @@ EE306_Labs/.svn/
 EE319K_Labswc/.svn/
 EE319K_Labswc/students/rvr324_byf69/Lab10_EE319K/Lab10Files/PipeDreams/
 EE319K_Labswc/students/rvr324_byf69/Lab10_EE319K/Lab10Files/
-EE 422C/.recommenders/
-EE 312/.svn/
-EE 312/gtest/
-EE 312/students/byf69/Project1B/GRADE_REPORT.txt
+EE_422C/.recommenders/
+EE_312/.svn/
+EE_312/gtest/
+EE_312/students/byf69/Project1B/GRADE_REPORT.txt
 GRADE_REPORT.txt
-EE 312/LectureNotes/
-EE 312/PastExams/
-EE 312/examples/
+EE_312/LectureNotes/
+EE_312/PastExams/
+EE_312/examples/
 *.hex
 *.lst
 *.result
@@ -19,14 +19,14 @@ EE 312/examples/
 *.conf
 EE319K_Labs/conf/
 EE319K_Labs/db/
-EE 422C/exam1/
-EE 312/test_cases/
+EE_422C/exam1/
+EE_312/test_cases/
 *.sln
 *.sdf
 *.vcxproj
-EE 312/students/byf69/Exercise10/Debug/
+EE_312/students/byf69/Exercise10/Debug/
 Debug/
-EE 312/exercises/
+EE_312/exercises/
 EE319K_Labs/
 EE319K_Labswc/DataSheets/
 *.iex
@@ -46,13 +46,13 @@ EE319K_Labswc/students/rvr324_byf69/Lab6_EE319K/Lab6.htm
 *.axf
 *.filters
 *.opensdf
-EE 379K/Project1/yash/bin/
-EE 379K/Project1/yash/obj/
+EE_379K/Project1/yash/bin/
+EE_379K/Project1/yash/obj/
 *.o
 *.cbp
 *.depend
 *.layout
-EE 379K/Project1/yash/yash
+EE_379K/Project1/yash/yash
 *.iml
 **/.idea/
 *.pdf
