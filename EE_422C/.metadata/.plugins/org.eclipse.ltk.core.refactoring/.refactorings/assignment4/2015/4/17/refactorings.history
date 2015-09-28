@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;StopWatch.java&apos; to &apos;assignment5/src/assignment5&apos;&#x0D;&#x0A;- Original project: &apos;assignment4&apos;&#x0D;&#x0A;- Destination element: &apos;assignment5/src/assignment5&apos;&#x0D;&#x0A;- Original element: &apos;assignment4.StopWatch.java&apos;" description="Copy compilation unit" destination="=assignment5/src&lt;assignment5" element1="/src&lt;assignment4{StopWatch.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1429412810318" units="1" version="1.0"/>
+</session>

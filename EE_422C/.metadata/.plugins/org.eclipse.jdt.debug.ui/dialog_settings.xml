@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="conditionHistory">
+		<item value="mid&lt;0" key="conditionHistoryEntry_6"/>
+		<item value="4" key="conditionHistoryEntryCount"/>
+		<item value="fraction &gt; Double.MAX_VALUE" key="conditionHistoryEntry_0"/>
+		<item value="mid &lt; 0" key="conditionHistoryEntry_1"/>
+		<item value="if(mid&lt;0)" key="conditionHistoryEntry_4"/>
+		<item value="mid &lt; 0;" key="conditionHistoryEntry_5"/>
+		<item value="mid == -2146796854" key="conditionHistoryEntry_2"/>
+		<item value="constant &lt; 0.0" key="conditionHistoryEntry_3"/>
+	</section>
+	<section name="org.eclipse.jdt.debug.ui.MAIN_METHOD_SELECTION_DIALOG">
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0D;&#x0A;&lt;History&gt;&#x0D;&#x0A;&lt;historyRootNode&gt;&#x0D;&#x0A;&lt;infoNode&gt;=assignment3/src&amp;lt;assignment3{GameRunner.java[GameRunner&lt;/infoNode&gt;&#x0D;&#x0A;&lt;infoNode&gt;=exam1/src&amp;lt;exam1{practice.java[practice&lt;/infoNode&gt;&#x0D;&#x0A;&lt;infoNode&gt;=assignment4/src&amp;lt;assignment4{PerformanceMeasurement.java[PerformanceMeasurement&lt;/infoNode&gt;&#x0D;&#x0A;&lt;/historyRootNode&gt;&#x0D;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="1|Segoe UI|9.07563|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="152" key="DIALOG_X_ORIGIN"/>
+			<item value="18" key="DIALOG_Y_ORIGIN"/>
+		</section>
+	</section>
+</section>
