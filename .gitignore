@@ -55,3 +55,8 @@ EE 379K/Project1/yash/obj/
 EE 379K/Project1/yash/yash
 *.iml
 **/.idea/
+*.pdf
+*.doc
+*.xlsx
+*.docx
+**/out/
