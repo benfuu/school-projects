@@ -1,0 +1,8 @@
+=====================================
+HELPFUL TIPS TO UNDERSTAND GIVEN CODE
+=====================================
+
+Driver is the .java file which has main (so execution starts from there)
+
+
+you have to write computeHours and computeGrades. The grade() method will be given to you through the appropriate GradeFunction

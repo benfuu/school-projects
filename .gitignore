@@ -60,3 +60,11 @@ EE_379K/Project1/yash/yash
 *.xlsx
 *.docx
 **/out/
+.svn/
+EE_379K_EPL/gtest/
+EE_360C/Lab2/tests/
+*.swp
+*.user
+.vs/
+*.bak
+EE_422C/.metadata/

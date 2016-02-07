@@ -1,0 +1,22 @@
+Run all of these with customGradeFunction():
+
+n=3, H=4
+answer:
+course 0: 0 hours
+course 1: 0 hours
+course 2: 4 hours
+max grade = 9
+
+n=3, H=5
+answer (multiple possible distributions):
+course 0: 0 or 1 hours
+course 1: 1 or 0 hours
+course 2: 4 hours
+max grade = 10
+
+n=3, H=9
+answer (multiple possible distributions):
+course 0: 0 or 1 or 2 or 3 or 4 or 5 hours
+course 1: 5 or 4 or 3 or 2 or 1 or 0 hours
+course 2: 4 hours
+max grade = 14
