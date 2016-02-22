@@ -1,0 +1,38 @@
+/*
+* Evaluate the address of the next state according to the
+* micro sequencer logic. Latch the next microinstruction.
+*/
+void eval_micro_sequencer() {
+	int nextState;
+	int ird = GetIRD(CURRENT_LATCHES.MICROINSTRUCTION);
+	if (ird == 0) {	/* next state is from J bits */
+		int j = GetJ(CURRENT_LATCHES.MICROINSTRUCTION);
+		int cond = GetCOND(CURRENT_LATCHES.MICROINSTRUCTION);
+		if (cond == 0) { /* unconditional */ }
+		else if (cond == 1) {	/* memory ready */
+			if (CURRENT_LATCHES.READY == 1) {	/* if R = 1, assert */
+				j = j | 0x2;	/* set bit 1 */
+			}
+		}
+		else if (cond == 2) {	/* branch */
+			if (CURRENT_LATCHES.BEN == 1) {
+				j = j | 0x4;	/* set bit 2 */
+			}
+		}
+		else {	/* addressing mode */
+			if (checkBit(CURRENT_LATCHES.IR, 11, 1) == 1) {	/* check bit*/
+				j = j | 0x1;	/* set bit 0 */
+			}
+		}
+		nextState = j;
+	}
+	else {	/* next state is [0,0,IR[15:12]] */
+		int ir = CURRENT_LATCHES.IR;
+		nextState = ((ir >> 12) & 0xF);
+	}
+	int i;
+	for (i = 0; i < CONTROL_STORE_BITS; i++) {
+		NEXT_LATCHES.MICROINSTRUCTION[i] = CONTROL_STORE[nextState][i];
+	}
+	NEXT_LATCHES.STATE_NUMBER = nextState;	/* for debugging */
+}

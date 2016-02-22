@@ -16,10 +16,9 @@ int main(void) {
 		vector<int> x;
 		for (int i = 0; i < 10; i++) {
 			x.push_back(i);
-			x.push_front(i + 1);
-			x.push_front(i + 2);
-			x.pop_back();
-			x.pop_front();
+			x.push_front(x[i] + 1);
+			// x.push_front(i);
+			// x.pop_front();
 			// x.pop_back();
 		}
 		cout << "size of vector is " << x.size() << endl;

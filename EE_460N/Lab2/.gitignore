@@ -1,0 +1,7 @@
+.vs/
+Lab2/Debug/
+*.opensdf
+*.sdf
+Lab2/
+dumpsim
+lc3bsim2_bak.c

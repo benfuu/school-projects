@@ -68,3 +68,5 @@ EE_360C/Lab2/tests/
 .vs/
 *.bak
 EE_422C/.metadata/
+*.suo
+*.results

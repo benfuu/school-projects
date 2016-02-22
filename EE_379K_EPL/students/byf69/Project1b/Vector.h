@@ -29,8 +29,8 @@ namespace epl {
 		vector(uint64_t n);
 		vector(vector const &);	// copy constructor
 		vector(vector &&);		// move constructor
-		~vector();					// destructor
-									/* Operators */
+		~vector();				// destructor
+		/* Operators */
 		vector& operator=(vector const &);
 		vector& operator=(vector &&);
 		T& operator[](uint64_t);
@@ -186,7 +186,7 @@ namespace epl {
 			al.construct(&(*this)[this->size() - 1], elem);			// construct and copy element to end of array
 		}
 	}
-
+	
 	template <typename T>
 	void vector<T>::push_back(T && elem) {
 		if ((this->first_elem() + this->size()) == this->capacity()) {	// check for capacity in back
@@ -205,7 +205,7 @@ namespace epl {
 			al.construct(&(*this)[this->size() - 1], std::move(elem));			// construct and move element to end of array
 		}
 	}
-
+	
 
 	/* Inserts a new element to beginning of vector. */
 	template <typename T>

@@ -1,12 +1,13 @@
 		.ORIG   x3000
+
 		AND R0, R0, #0                  ;x3000  CLEARS REGISTERS 0 THROUGH 7
-		AND R1, R1, #0                  ;x3001
-		AND R2, R2, #0                  ;x3002
-		AND R3, R3, #0                  ;x3003
-		AND R4, R4, #0                  ;x3004
-		AND R5, R5, #0                  ;x3005
-		AND R6, R6, #0                  ;x3006
-		AND R7, R7, #0                  ;x3007
+		AND R1, R1, #0                  ;x3002
+		AND R2, R2, #0                  ;x3004
+		AND R3, R3, #0                  ;x3006
+		AND R4, R4, #0                  ;x3008
+		AND R5, R5, #0                  ;x300A
+		AND R6, R6, #0                  ;x300C
+		AND R7, R7, #0                  ;x300E
 		
 		;R3 HAS SOURCE ADDRESS, R5 HAS DEST ADDRESS, R6 HAS COUNT, R7 HAS MASK LOCATION, R1 HAS MASK, R0 HAS MEM[R3]
 		LEA R3, SOURCE              ;ADDRESS TO WHERE DATA SHOULD BE PULLED, START WITH FIRST ADDRESS (x4000)

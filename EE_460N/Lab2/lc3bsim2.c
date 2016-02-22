@@ -15,11 +15,18 @@
 /*   The University of Texas at Austin                         */
 /*                                                             */
 /***************************************************************/
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+int getMemByte(int);
+int getMemWord(int);
+void setMemByte(int, int);
+void setMemWord(int, int);
+
+void setCC(int, int);
 
 /***************************************************************/
 /*                                                             */
@@ -51,7 +58,7 @@ void process_instruction();
    MEMORY[A][1] stores the most significant byte of word at word address A 
 */
 
-#define WORDS_IN_MEM    0x08000 
+#define WORDS_IN_MEM    0x08000
 int MEMORY[WORDS_IN_MEM][2];
 
 /***************************************************************/
@@ -357,6 +364,15 @@ void initialize(char *program_filename, int num_prog_files) {
   RUN_BIT = TRUE;
 }
 
+/* Initialize the shuffle program */
+void initializeShuffle(void) {
+	setMemByte(0x4000, 0xAA);
+	setMemByte(0x4001, 0xBB);
+	setMemByte(0x4002, 0xCC);
+	setMemByte(0x4003, 0xDD);
+	setMemByte(0x4004, 0xD2);
+}
+
 /***************************************************************/
 /*                                                             */
 /* Procedure : main                                            */
@@ -375,6 +391,7 @@ int main(int argc, char *argv[]) {
   printf("LC-3b Simulator\n\n");
 
   initialize(argv[1], argc - 1);
+  /* initializeShuffle(); */
 
   if ( (dumpsim_file = fopen( "dumpsim", "w" )) == NULL ) {
     printf("Error: Can't open dumpsim file\n");
@@ -404,9 +421,27 @@ int main(int argc, char *argv[]) {
 
 /***************************************************************/
 
-int registers[8] = {0}; /* array that holds all register values */
-int MAX_INST_LENGTH = 8;
+#define MAX_INST_LENGTH 8
 
+/* Functions for easier memory reading/writing in program */
+int getMemByte(int addr) {
+	return (addr % 2 == 0) ? (MEMORY[addr >> 1][0]) : (MEMORY[addr >> 1][1]);
+}
+int getMemWord(int addr) {
+	return (MEMORY[addr >> 1][1] << 8) + MEMORY[addr >> 1][0];
+}
+void setMemByte(int addr, int val) {
+	if (addr % 2 == 0) {	/* even */
+		MEMORY[addr >> 1][0] = val;
+	}
+	else { MEMORY[addr >> 1][1] = val; }	/* odd */
+}
+void setMemWord(int addr, int val) {
+	int msb = (val & 0xFF00) >> 8;
+	int lsb = val & 0x00FF;
+	MEMORY[addr >> 1][1] = msb;
+	MEMORY[addr >> 1][0] = lsb;
+}
 
 
 
@@ -424,7 +459,24 @@ void update_latches(){
   return;
 }
 
-
+/* Updates all the condition codes based on the value and the bit width */
+void setCC(int val, int bits) {
+	if ((val & (0x1 << (bits - 1))) == (0x1 << (bits - 1))) {	/* N bit */
+		NEXT_LATCHES.N = 1;
+		NEXT_LATCHES.Z = 0;
+		NEXT_LATCHES.P = 0;
+	}
+	else if (val == 0) {	/* Z bit */
+		NEXT_LATCHES.N = 0;
+		NEXT_LATCHES.Z = 1;
+		NEXT_LATCHES.P = 0;
+	}
+	else {	/* P bit */
+		NEXT_LATCHES.N = 0;
+		NEXT_LATCHES.Z = 0;
+		NEXT_LATCHES.P = 1;
+	}
+}
 
 
 /***************************************************************/
@@ -436,260 +488,128 @@ void update_latches(){
 void execute(int line, char* instruction, int arg1, int arg2, int arg3){
     /* add instruction , arg1 = dr, arg2 = sr1, arg3 = sr2/imm5*/
     if(strcmp(instruction, "ADD") == 0){
-        NEXT_LATCHES.REGS[arg1] = arg2 + arg3;
-        if(registers[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] > 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(arg2 + arg3);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* and instruction */
     else if(strcmp(instruction , "AND") == 0){
-        NEXT_LATCHES.REGS[arg1] = (arg2 & arg3);
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] > 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(arg2 & arg3);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* jmp instruction */
     else if(strcmp(instruction , "JMP") == 0){
         NEXT_LATCHES.PC = arg1;
-        update_latches();
     }
     /* ret instruction */
     else if(strcmp(instruction , "RET") == 0){
         NEXT_LATCHES.PC = NEXT_LATCHES.REGS[7]; /* previous pc should have been saved in r7 */
-        update_latches();
     }
     /* jsr instruction */
     else if(strcmp(instruction , "JSR") == 0){
-        CURRENT_LATCHES.PC = NEXT_LATCHES.REGS[7] + arg1;
-        update_latches();
+        NEXT_LATCHES.PC += arg1;
     }
     /* jsrr instruction */
     else if(strcmp(instruction , "JSRR") == 0){
-        CURRENT_LATCHES.PC = arg1;
-        update_latches();
+        NEXT_LATCHES.PC = arg1;
     }
     /* nop instruction */
-    else if(strcmp(instruction, "NOP") == 0){
-        update_latches();
-    }
+    else if(strcmp(instruction, "NOP") == 0){}
     /* ldb instruction */
     else if(strcmp(instruction, "LDB") == 0){
         if((arg3 & 0x0020) == 0x0020){
-            arg3 = arg3 | 0xFFC0; /*sign extend 1 */
+            arg3 = arg3 | 0xFFFFFFC0; /*sign extend 1 */
         }
         else{
             arg3 = arg3 & 0x003F; /* sign extend 0 */
         }
         arg2 += arg3;
-        registers[arg1] = MEMORY[arg2][1];
-        if((arg1 & 0x0080) == 0x0080){
-            NEXT_LATCHES.REGS[arg1] = NEXT_LATCHES.REGS[arg1] | 0xFF00; /* sign extend 1 */
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
+        NEXT_LATCHES.REGS[arg1] = Low16bits(getMemByte(arg2));
+		/* Set cc bits */
+		int val = NEXT_LATCHES.REGS[arg1];
+        if((val & 0x0080) == 0x0080){
+            NEXT_LATCHES.REGS[arg1] = Low16bits(NEXT_LATCHES.REGS[arg1] | 0xFFFFFF00); /* sign extend 1 */
+        }
+        else if ((val & 0x00FF) == 0) {
+			NEXT_LATCHES.REGS[arg1] = Low16bits(NEXT_LATCHES.REGS[arg1] & 0x00FF); /* sign extend 0 */
         }
         else{
-            NEXT_LATCHES.REGS[arg1] = NEXT_LATCHES.REGS[arg1] & 0x00FF; /* sign extend 0 */
-            if((NEXT_LATCHES.REGS[arg1] & 0x00FF) == 0){
-                NEXT_LATCHES.N = 0;
-                NEXT_LATCHES.Z = 1;
-                NEXT_LATCHES.P = 0;
-            }
-            else{
-                NEXT_LATCHES.REGS[arg1] = NEXT_LATCHES.REGS[arg1] & 0x00FF;
-                NEXT_LATCHES.N = 0;
-                NEXT_LATCHES.Z = 0;
-                NEXT_LATCHES.P = 1;
-            }
+            NEXT_LATCHES.REGS[arg1] = Low16bits(NEXT_LATCHES.REGS[arg1] & 0x00FF);
         }
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* ldw instruction */
     else if(strcmp(instruction, "LDW") == 0){
         if((arg3 & 0x0020) == 0x0020){
-            arg3 = arg3 | 0xFFC0; /*sign extend 1 */
+            arg3 = arg3 | 0xFFFFFFC0; /*sign extend 1 */
         }
         else{
             arg3 = arg3 & 0x003F; /* sign extend 0 */
         }
         arg2 += arg3;
-        NEXT_LATCHES.REGS[arg1] = (MEMORY[arg2][0]) + (MEMORY[arg2][1] << 8);
-        if((NEXT_LATCHES.REGS[arg1] & 0x8000) == 0x8000){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
+        NEXT_LATCHES.REGS[arg1] = Low16bits(getMemWord(arg2));
+		/* Set cc bits */
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* lea instruction */
     else if(strcmp(instruction, "LEA") == 0){
-        if((arg2 & 0x0100) == 0x0100){
-	  arg2 = (arg2 | 0xFE00); /* sign extend 1 */
-        }
-        else{
-	  arg2 = (arg2 & 0x01FF); /* sign extend 0 */
-        }
-	arg2 = arg2 * 2;
-        NEXT_LATCHES.REGS[arg1] = CURRENT_LATCHES.PC + arg2;
-        update_latches();
+		if ((arg2 & 0x0100) == 0x0100) {
+			arg2 = (arg2 | 0xFE00); /* sign extend 1 */
+		}
+		else {
+			arg2 = (arg2 & 0x01FF); /* sign extend 0 */
+		}
+		NEXT_LATCHES.REGS[arg1] = Low16bits(NEXT_LATCHES.PC + (arg2 << 1));
     }
     /* not instruction */
     else if(strcmp(instruction, "NOT") == 0){
-        NEXT_LATCHES.REGS[arg1] = ~arg2;
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] > 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(~arg2);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* xor instruction */
     else if(strcmp(instruction, "XOR") == 0){
-        NEXT_LATCHES.REGS[arg1] = arg2 ^ arg3;
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(arg2 ^ arg3);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* rshfl instruction */
     else if(strcmp(instruction, "LSHF") == 0){
-        NEXT_LATCHES.REGS[arg1] = arg2 << arg3;
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(arg2 << arg3);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     else if(strcmp(instruction, "RSHFL") == 0){
-        NEXT_LATCHES.REGS[arg1] = arg2 >> arg3;
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+        NEXT_LATCHES.REGS[arg1] = Low16bits(arg2 >> arg3);
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     else if(strcmp(instruction, "RSHFA") == 0){
-        NEXT_LATCHES.REGS[arg1] = arg2 << arg3;
-        NEXT_LATCHES.REGS[arg1] += ((arg2 & 0x8000) >> 15); /* bit 15 of arg2 goes into bit 0 or arg1 */
-        if(NEXT_LATCHES.REGS[arg1] < 0){
-            NEXT_LATCHES.N = 1;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 0;
-        }
-        else if(NEXT_LATCHES.REGS[arg1] == 0){
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 1;
-            NEXT_LATCHES.P = 0;
-        }
-        else{
-            NEXT_LATCHES.N = 0;
-            NEXT_LATCHES.Z = 0;
-            NEXT_LATCHES.P = 1;
-        }
-        update_latches();
+		NEXT_LATCHES.REGS[arg1] = arg2;
+		int i;
+		for (i = 0; i < arg3; i++) {
+			NEXT_LATCHES.REGS[arg1] = Low16bits(NEXT_LATCHES.REGS[arg1] >> 1);
+			if ((arg2 & (1 << i)) == (1 << i)) {
+				NEXT_LATCHES.REGS[arg1] += 0x8000;
+			}
+		}
+		setCC(NEXT_LATCHES.REGS[arg1], 16);
     }
     /* stb instruction */
     else if(strcmp(instruction, "STB") == 0){
         arg2 += arg3;
-        MEMORY[arg2][1] = (NEXT_LATCHES.REGS[arg1] & 0x00FF);
-        update_latches();
+		NEXT_LATCHES.REGS[arg1] = (NEXT_LATCHES.REGS[arg1] & 0xFF);	/* mask bits 7:0 */
+		setMemByte(arg2, NEXT_LATCHES.REGS[arg1]);
     }
     /* stw instruction */
     else if(strcmp(instruction, "STW") == 0){
         arg2 += arg3;
-        MEMORY[arg2][0] = (NEXT_LATCHES.REGS[arg1] & 0x00FF);
-        MEMORY[arg2][1] = ((NEXT_LATCHES.REGS[arg1] & 0xFF00) << 8);
-        update_latches();
+		setMemWord(arg2, NEXT_LATCHES.REGS[arg1]);
     }
     /* trap instruction */
     else if(strcmp(instruction, "TRAP") == 0){
         NEXT_LATCHES.REGS[7] = CURRENT_LATCHES.PC;
-        NEXT_LATCHES.PC = ((MEMORY[arg1][0]) + (MEMORY[arg1][1] << 8));
-        update_latches();
+		NEXT_LATCHES.PC = getMemWord(arg1);
     }
     /* br instruction */
     else if(strcmp(instruction, "BR") == 0){
         if(((line & 0x0E00) == 0x0000) || ((line & 0x0E00) == 0x0E00)){ /* if br or brnzp */
-  
-	  NEXT_LATCHES.PC = CURRENT_LATCHES.PC + arg1;
+			NEXT_LATCHES.PC = CURRENT_LATCHES.PC + arg1;
         }
         else if((line & 0x0E00) == 0x0800){ /* brn */
             if(CURRENT_LATCHES.N == 1){
@@ -721,14 +641,13 @@ void execute(int line, char* instruction, int arg1, int arg2, int arg3){
                 NEXT_LATCHES.PC = CURRENT_LATCHES.PC + arg1;
             }
         }
-	update_latches();
     }
-    
+	update_latches();
 }
 
 
 
-#define MAX_INST_LENGTH 10
+
 
 /***************************************************************/
 /* This should check which instruction is to be run and which
@@ -741,6 +660,7 @@ void execute(int line, char* instruction, int arg1, int arg2, int arg3){
 /***************************************************************/
 
 void decode(int instruction){
+    int temp = 0;
     int sr1 = 0; /* source 1 register */
     int sr2 = 0; /* source 2 register */
     int dr = 0; /* destination register */
@@ -750,7 +670,7 @@ void decode(int instruction){
     int amount4 = 0; /* variable for shift instructions */
     int trapvector = 0; /* trap vector */
     int first = (instruction & 0xF000); /* this variable is to mask the first four bits, i.e. first & 0xF000 */
-	char decoded[MAX_INST_LENGTH];
+    char decoded[MAX_INST_LENGTH];
     /* ADD instruction */
     if(first == 0x1000){
         strcpy(decoded, "ADD");
@@ -759,8 +679,9 @@ void decode(int instruction){
         sr1 = NEXT_LATCHES.REGS[sr1];
         if((instruction & 0x0020) == 0x0020){ /* if this add has an immediate 5 value instead of a sr2 value */
             imm5 = (instruction & 0x001F);
-            if((imm5 & 0x0010) == 1){
-                imm5 = imm5 | 0xFFE0; /* sign extend 1 */
+	    temp = imm5 & 0x0010;
+            if((imm5 & 0x0010) == 0x0010){
+                imm5 = imm5 | 0xFFFFFFE0; /* sign extend 1 */
             }
             else{
                 imm5 = imm5 & 0x001F; /* sign extend 0 */
@@ -781,8 +702,8 @@ void decode(int instruction){
         sr1 = NEXT_LATCHES.REGS[sr1];
         if((instruction & 0x0020) == 0x0020){
             imm5 = (instruction & 0x001F); /* if the and has a immediate 5 value instead of sr2 */
-            if((imm5 & 0x0010) == 1){
-                imm5 = imm5 | 0xFFE0; /* sign extend 1 */
+            if((imm5 & 0x0010) == 0x0010){
+                imm5 = imm5 | 0xFFFFFFE0; /* sign extend 1 */
             }
             else{
                 imm5 = imm5 & 0x001F; /* sign extend 0 */
@@ -805,11 +726,12 @@ void decode(int instruction){
             strcpy(decoded, "BR");
             imm9 = (instruction & 0x01FF);
             if((imm9 & 0x0100) == 0x0100){
-                imm9 = imm9 | 0xFE00; /* one extend */
+                imm9 = imm9 | 0xFFFFFE00; /* one extend */
             }
             else{
                 imm9 = imm9 & 0x01FF; /* zero extend */
             }
+	    imm9 = imm9 * 2; 
             execute(instruction, decoded, imm9, 0, 0);
         }
     }
@@ -838,7 +760,7 @@ void decode(int instruction){
                 dr = dr & 0x0FFF;  /* sign extends 0 */
             }
             else{
-                dr = dr | 0xF000;  /* sign extends 1 */
+                dr = dr | 0xFFFFF000;  /* sign extends 1 */
             }
             execute(instruction, decoded, dr, 0, 0);
         }
@@ -846,7 +768,7 @@ void decode(int instruction){
             strcpy(decoded, "JSRR");
             NEXT_LATCHES.REGS[7] = CURRENT_LATCHES.PC;
             dr = (instruction & 0x01C0) >> 6;;
-            dr = registers[dr];
+            dr = NEXT_LATCHES.REGS[dr];
             execute(instruction, decoded, dr, 0, 0);
         }
     }
@@ -857,7 +779,7 @@ void decode(int instruction){
         sr1 = (instruction & 0x01C0) >> 6;
         sr1 = NEXT_LATCHES.REGS[sr1]; /* base register */
         imm6 = (instruction & 0x003F); /* 6 bit base offset */
-	execute(instruction, decoded, dr, sr1, imm6);
+		execute(instruction, decoded, dr, sr1, imm6);
     }
     /* ldw instruction */
     else if(first == 0x6000){
@@ -866,7 +788,7 @@ void decode(int instruction){
         sr1 = (instruction & 0x01C0) >> 6;
         sr1= NEXT_LATCHES.REGS[sr1]; /* base register */
         imm6 = (instruction & 0x003F); /* 6 bit base offset */
-	execute(instruction, decoded, dr, sr1, imm6);
+		execute(instruction, decoded, dr, sr1, imm6);
     }
     /* lea instruction */
     else if(first == 0xE000){
@@ -875,11 +797,6 @@ void decode(int instruction){
         imm9 = (instruction & 0x01FF);
         execute(instruction, decoded, dr, imm9, 0);
     }
-    /* RTI instruction is not implemented
-     else if(first == 0x8000){
-     strcpy(decoded, "RTI");
-     }
-     */
     /* xor and not instruction */
     else if(first == 0x9000){
         if((instruction & 0x0038) == 0x0000){
@@ -906,7 +823,7 @@ void decode(int instruction){
             sr1 = NEXT_LATCHES.REGS[sr1];
             imm5 = (instruction & 0x001F);
             if((imm5 & 0x0010) == 0x0010){
-                imm5 = imm5 | 0xFFE0;
+                imm5 = imm5 | 0xFFFFFFE0;
             }
             else{
                 imm5 = imm5 & 0x001F;
@@ -938,12 +855,6 @@ void decode(int instruction){
             sr1 = (instruction & 0x01C0) >> 6;
             sr1 = NEXT_LATCHES.REGS[sr1];
             amount4 =(instruction & 0x000F);
-            if((amount4 & 0x0008) == 0x0008){
-                amount4 = amount4 | 0xFFF0; /* sign extend 1 */
-            }
-            else{
-                amount4 = amount4 & 0x000F; /*sign extend 0 */
-            }
             execute(instruction, decoded, dr, sr1, amount4);
         }
     }
@@ -955,7 +866,7 @@ void decode(int instruction){
         sr1 = NEXT_LATCHES.REGS[sr1];
         imm6 = (instruction & 0x003F);
         if((imm6 & 0x0020) == 0x0020){
-            imm6 = imm6 | 0xFFC0; /* sign extend 1 */
+            imm6 = imm6 | 0xFFFFFFC0; /* sign extend 1 */
         }
         else{
             imm6 = imm6 & 0x003F; /* sign extend 0 */
@@ -970,7 +881,7 @@ void decode(int instruction){
         sr1 = NEXT_LATCHES.REGS[sr1];
         imm6 = (instruction & 0x003F);
         if((imm6 & 0x0020) == 0x0020){
-            imm6 = imm6 | 0xFFC0; /* sign extend 1 */
+            imm6 = imm6 | 0xFFFFFFC0; /* sign extend 1 */
         }
         else{
             imm6 = imm6 & 0x003F; /* sign extend 0 */
@@ -989,8 +900,6 @@ void decode(int instruction){
 }
 
 
-
-
 /***************************************************************/
 /* This should look into MEMORY[x][y] and find the instruction
    This function uses the following variables:
@@ -1000,14 +909,14 @@ void decode(int instruction){
 */
 /***************************************************************/
 void fetch_instruction(){
-  int counter = (CURRENT_LATCHES.PC >> 1); /* addfress of where the program should be stored, in this case 0x3000/2 */
-  NEXT_LATCHES.PC = CURRENT_LATCHES.PC + 2;
-  CURRENT_LATCHES.PC = NEXT_LATCHES.PC;
-  int lbyte = 0; /* for least significant byte */ 
-  int mbyte = 1; /* for most significant byte */
-  int instruction = 0;
-  instruction = (MEMORY[counter][lbyte] + (MEMORY[counter][mbyte] << 8));
-  decode(instruction);
+	int counter = (CURRENT_LATCHES.PC >> 1); /* addfress of where the program should be stored, in this case 0x3000/2 */
+	NEXT_LATCHES.PC = CURRENT_LATCHES.PC + 2;
+	CURRENT_LATCHES.PC = NEXT_LATCHES.PC;
+	int lbyte = 0; /* for least significant byte */ 
+	int mbyte = 1; /* for most significant byte */
+	int instruction = 0;
+	instruction = getMemWord(counter << 1);
+	decode(instruction);
 }
 
 
@@ -1020,9 +929,9 @@ void process_instruction(){
    *       -Execute
    *       -Update NEXT_LATCHES
    */
-  int temp = 0;
-  fetch_instruction();
-  return;
+	int temp = 0;
+	fetch_instruction();
+	return;
 }
 
 
