@@ -1,80 +1,36 @@
-# New Makefile that automatically depends itself
-#
-# $Id: Makefile,v 1.3 1996/12/17 19:52:37 chase Exp $
-#
+GTEST_DIR = ../../../gtest
+GTEST_INC = $(GTEST_DIR)/include
 
-IFLAGS = 
-DFLAGS = 
-CXX = g++ --std=c++11
-CC  = $(GCC)
-GCC = g++ --std=c++11
-LD  = $(CXX)
+#choose based on system
+GTEST_LIB = $(GTEST_DIR)/lib/gtest64.a
+#GTEST_LIB = $(GTEST_DIR)/lib/gtest32.a
 
-LIBS = 
+CXX = g++
+CXXFLAGS = -g -I $(GTEST_INC) -std=c++11 -Wall -Wno-sign-compare #-Werror -fmax-errors=1 -Wno-sign-compare
+DEFS?= -DPHASE_A
 
-WFLAGS = -Wall 
-SYMFLAGS = -g
+SRCS = $(shell ls *.cpp)
+OBJS = $(patsubst %.cpp, %.o, $(SRCS))
+DEPS = $(patsubst %.cpp, %.d, $(SRCS))
+TEST = vector_unittest
 
-PROFILE = #-pg 
-OPTFLAGS =#-O
-CFLAGS = $(OPTFLAGS) $(PROFILE) $(WFLAGS) $(IFLAGS) $(SYMFLAGS)
-CXXFLAGS = $(CFLAGS)
-CPPFLAGS = $(IFLAGS) $(DFLAGS)
-LDFLAGS = $(PROFILE) -g 
+all: $(TEST)
 
-PROGRAM = project1A
-#CXXSRCS = Source.cpp
+test: $(TEST)
+	@./$(TEST)
 
-CXXSRCS = $(shell ls *.cpp)
-          
+$(TEST): $(OBJS)
+	$(CXX) $^ $(EXTRA_TESTS) $(GTEST_LIB) $(DEFS) $(CXXFLAGS) -pthread -o $@
 
-SRCS = $(CXXSRCS) 
+#<Automatic Dependency Generation>
+-include $(DEPS)
 
-OBJS = $(CXXSRCS:.cpp=.o)
+%.d: %.cpp
+	@$(CXX) $< $(CXXFLAGS) -MM > $@
 
-all: $(PROGRAM)
-
-$(PROGRAM): $(OBJS)
-	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
-
-test: $(PROGRAM)
-	./$(PROGRAM)
+%.o: %.d
+	$(CXX) $*.cpp $(DEFS) $(CXXFLAGS) -c -o $@
+#<\Automatic Dependency Generation>
 
 clean:
-	-rm -f $(OBJS) $(PROGRAM)
-
-tidy:
-	-rm -f *.BAK *.bak *.CKP
-
-undepend:
-	-rm -f $(OBJS:%.o=.%.d) 
-
-spotless: tidy clean undepend
-
-.y.cpp:
-	$(BISON) $(BISONFLAGS) -o $@ $<
-	mv $@.h $*.h
-	mv $@.output $*.output
-.l.cpp:
-	$(FLEX) ${FLEXFLAGS} -t $< > $@
-
-# auto depend stuff for GNU make only
-depend: undepend
-	@echo ""
-	@echo "Dependences are handled automatically, just \"make\""
-
-ifneq ($(strip $(CSRCS)),)
-.%.d: %.c 
-	$(SHELL) -ec '$(GCC) -MM $(CPPFLAGS) $< > $@'
-
-
-include $(CSRCS:%.c=.%.d)
-endif 
-
-ifneq ($(strip $(CXXSRCS)),)
-.%.d: %.cpp
-	$(SHELL) -ec '$(GCC) -MM $(CPPFLAGS) $< > $@'
-
-include $(CXXSRCS:%.cpp=.%.d) 
-endif 
-
+	-rm -rf *.o *d $(TEST) 

@@ -58,7 +58,8 @@ public class DailyDigestServlet extends HttpServlet {
 
             try {
                 Message msg = new MimeMessage(session);
-                msg.setFrom(new InternetAddress("bennycooly@gmail.com", "Admin - EE 461L Blog"));
+                msg.setFrom(new InternetAddress("admin@ee461l-blog-byf69.appspotmail.com", "Admin - EE 461L Blog"));
+                log(subscribers.toString());
                 for (Subscriber subscriber : subscribers) {
                     msg.addRecipient(Message.RecipientType.TO, new InternetAddress(subscriber.email));
                 }

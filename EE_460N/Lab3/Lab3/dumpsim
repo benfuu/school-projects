@@ -1,22 +1,10 @@
 
-Current register/bus values :
+Memory content [0x4000..0x400a] :
 -------------------------------------
-Cycle Count  : 107
-PC           : 0x0000
-IR           : 0xf025
-STATE_NUMBER : 0x0012
-
-BUS          : 0x0000
-MDR          : 0x0000
-MAR          : 0x004a
-CCs: N = 0  Z = 0  P = 1
-Registers:
-0: 0xffff
-1: 0x3010
-2: 0x0004
-3: 0x000c
-4: 0x0000
-5: 0x0000
-6: 0x3016
-7: 0x3018
+ 0x4000 (16384) : 0x1a2b
+ 0x4002 (16386) : 0x3c4d
+ 0x4004 (16388) : 0x3cff
+ 0x4006 (16390) : 0x3c3c
+ 0x4008 (16392) : 0x003c
+ 0x400a (16394) : 0x0000
 

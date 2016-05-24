@@ -1,0 +1,10 @@
+		.ORIG x3000
+START	ADD R0, R0, #-1
+		ADD R1, R1, #5
+		ADD R2, R0, R1
+		ADD R2, R2, R1
+		ADD R2, R2, R2
+		ADD R3, R2, #5
+
+DONE	TRAP x25
+		.END

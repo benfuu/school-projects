@@ -1,15 +1,9 @@
 		.ORIG x3000
 START	ADD R0, R0, #-1
-		LEA R1, ONE
-		JSRR R1
-		JSR TWO
-		LEA R6, DONE
-		JMP R6
-TWO		ADD R3, R2, #8
-		RET
-ONE		ADD R2, R0, #5
-		RET
-		ADD R3, R3, #3
+		ADD R1, R1, #5
+		ADD R2, R0, R1
+		ADD R2, R2, R1
+		ADD R2, R2, R2
 
 DONE	TRAP x25
 		.END

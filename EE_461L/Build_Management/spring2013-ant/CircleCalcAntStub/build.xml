@@ -1,0 +1,41 @@
+<project name="CircleCalcAnt" default="dist" basedir=".">
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="dist.jar.dir" value="${dist.dir}/lib"/>
+	<property name="dist.jarfile" value="${dist.jar.dir}/CircleCalc.jar"/>
+	<property name="jar.dir" value="lib"/>
+	
+	<property name="jar.mathlib" location="${jar.dir}/commons-math3-3.6.1.jar"/>
+
+	<target name="init">
+		<!-- write init task(s) here -->
+        <mkdir dir="${build.dir}"></mkdir>
+        <mkdir dir="${dist.dir}"></mkdir>
+	</target>
+
+	<target name="compile" depends="init">
+		<!-- write compile task(s) here -->
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpath="${jar.dir}/commons-math3-3.6.1.jar" includeantruntime="false" />
+	</target>
+
+	<target name="dist" depends="compile">
+		<!-- add missing task(s) (if any) here -->
+		<jar jarfile="${dist.jarfile}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="Circle" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- add "run" target here" -->
+    <target name="run" depends="compile">
+        <java jar="${dist.jarfile}" fork="true" />
+    </target>
+
+	<!-- add clean target here" -->
+    <target name="clean" depends="run">
+        <delete dir="${build.dir}"></delete>
+        <delete dir="${dist.dir}"></delete>
+    </target>
+</project>

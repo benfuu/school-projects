@@ -1,0 +1,14 @@
+
+		.ORIG x3000
+		
+		LEA R0, LABEL	; R0 = x3001
+		LEA R1, LABEL1	; R1 = x3002
+		ADD R2, R2, #-1
+		STR R2, R1, #0
+		TRAP x25
+
+LABEL		.FILL x3000
+LABEL1		.BLKW #3
+LABEL2		.STRINGZ "hello world\n"
+		.END
+

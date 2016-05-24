@@ -1,0 +1,3 @@
+	.ORIG x5000
+	ADD R0, R0, #25
+	.END

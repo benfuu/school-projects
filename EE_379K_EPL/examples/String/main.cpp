@@ -9,11 +9,15 @@
 #include <vector>
 #include <algorithm>
 #include "String.h"
+#include <utility>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
+
+// I have little luck with rel_ops
+//using namespace std::rel_ops;
 
 //void test_compare(void) {
 //	vector<String> v{"abcdefgh", "abcdefg", "abcdefghi", ""};
@@ -29,18 +33,26 @@ using std::vector;
 //	cout << t << endl;
 //}
 
-bool operator!=(const String& x, const String& y) {
-	return !( x == y);
+//bool operator!=(const String& x, const String& y) {
+//	return !( x == y);
+//}
+
+template <typename T>
+bool operator!=(T const& x, T const& y) {
+	return !(x == y);
 }
 
 int main(void) {
 	String s{"Hello World"};
-	if (s != "Hello World") {
 
+	String::iterator b = s.begin();
+	auto e = s.end();
+	while (b != e) {
+		cout << *b;
+		++b;
+		s = String{ "gotcha" };
 	}
-
-	s[4] = 'd';
-
+	cout << endl;
 }
 
 

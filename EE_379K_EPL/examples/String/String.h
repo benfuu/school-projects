@@ -103,16 +103,27 @@ private:
 		return (byte_len + bytes_per_word - 1) / bytes_per_word;
 	}
 
-	template <typename Character> class iterator_helper {
+	template <typename Character> class iterator_helper
+	 : public std::iterator<std::random_access_iterator_tag, Character> {
 	private:
 		Character* ptr;
 		using Same = iterator_helper<Character>;
 	public:
+
 		Character& operator*(void) { return ptr[-1];}
 		Same& operator++(void) {
 			--ptr;
 			return *this;
 		}
+
+		bool operator==(Same const& rhs) const {
+			return this->ptr == rhs.ptr;
+		}
+
+		bool operator!=(Same const& rhs) const {
+			return !(*this == rhs);
+		}
+
 		Same operator++(int) {
 			Same t{*this}; // make a copy
 			operator++(); // increment myself
@@ -122,11 +133,38 @@ private:
 			Same result{};
 			result.ptr = this->ptr - k;
 		}
+		friend String;
 	};
 
 public:
 	using iterator=iterator_helper<char>;
 	using const_iterator=iterator_helper<const char>;
+	iterator begin(void) {
+		iterator p;
+		p.ptr = data;
+		return p;
+	}
+
+	const_iterator begin(void) const {
+		const_iterator p;
+		p.ptr = data;
+		return p;
+	}
+
+	iterator end(void) {
+		iterator p;
+		p.ptr = (char*)storage;
+		return p;
+	}
+
+	const_iterator end(void) const {
+		const_iterator p;
+		p.ptr = (char*)storage;
+		return p;
+	}
+		
+
+
 
 	String(void) {
 		storage = nullptr;
@@ -222,9 +260,6 @@ public:
 //	bool operator>(const String& rhs) const { const String& lhs = *this; return rhs < lhs; }
 //	bool operator<=(const String& rhs) const { const String& lhs = *this; return !(rhs < lhs); }
 //	bool operator>=(const String& rhs) const { const String& lhs = *this; return !(lhs < rhs); }
-
-	iterator begin(void) {
-	}
 
 private:
 	void copy(const String& that) {
